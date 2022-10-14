@@ -69,7 +69,7 @@ public class GalleryRepository {
                     projection,
                     selection,
                     selectionArgs,
-                    sort + " ASC + LIMIT " + String.valueOf(limit) + " OFFSET " + String.valueOf(offSet)
+                    sort + " ASC LIMIT " + String.valueOf(limit) + " OFFSET " + String.valueOf(offSet)
             );
         }
 

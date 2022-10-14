@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -23,7 +24,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
-    static int RESULT_REQUEST_PERMISSION = 2;
+
+    static int RESULT_REQUEST_PERMISSION = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
     void setFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragContainer, fragment);
@@ -68,6 +69,12 @@ public class MainActivity extends AppCompatActivity {
         checkForPermissions(permissions);
     }
 
+    private boolean hasPermission(String permission) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return ActivityCompat.checkSelfPermission(MainActivity.this, permission) == PackageManager.PERMISSION_GRANTED;
+        }
+        return false;
+    }
 
     private void checkForPermissions(List<String> permissions) {
         List<String> permissionsNotGranted = new ArrayList<>();
@@ -90,20 +97,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private boolean hasPermission(String permission) {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return ActivityCompat.checkSelfPermission(MainActivity.this, permission) == PackageManager.PERMISSION_GRANTED;
-        }
-        return false;
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         final List<String> permissionsRejected = new ArrayList<>();
         if(requestCode == RESULT_REQUEST_PERMISSION) {
-
             for(String permission : permissions) {
                 if(!hasPermission(permission)) {
                     permissionsRejected.add(permission);
@@ -115,13 +114,13 @@ public class MainActivity extends AppCompatActivity {
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if(shouldShowRequestPermissionRationale(permissionsRejected.get(0))) {
                     new AlertDialog.Builder(MainActivity.this).
-                    setMessage("Para usar essa app é preciso conceder essas permissões").
-                    setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            requestPermissions(permissionsRejected.toArray(new String[permissionsRejected.size()]), RESULT_REQUEST_PERMISSION);
-                        }
-                    }).create().show();
+                            setMessage("Para usar essa app é preciso conceder essas permissões").
+                            setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    requestPermissions(permissionsRejected.toArray(new String[permissionsRejected.size()]), RESULT_REQUEST_PERMISSION);
+                                }
+                            }).create().show();
                 }
             }
         }
@@ -131,6 +130,4 @@ public class MainActivity extends AppCompatActivity {
             bottomNavigationView.setSelectedItemId(navigationOpSelected);
         }
     }
-
-
 }
