@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.paging.PagingData;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -13,8 +14,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import java.util.Observer;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,8 +41,8 @@ public class GridViewFragment extends Fragment {
         LiveData<PagingData<ImageData>> liveData = mViewModel.getPageLv();
         liveData.observe(getViewLifecycleOwner(), new Observer<PagingData<ImageData>>() {
             @Override
-            public void onChanged(PagingData<ImageData> objectPagingData) {
-                gridAdapter.submitData(getViewLifecycleOwner().getLifecycle(),objectPagingData);
+            public void onChanged(PagingData<ImageData> imageDataPagingData) {
+                gridAdapter.submitData(getViewLifecycleOwner().getLifecycle(),imageDataPagingData);
             }
         });
 
